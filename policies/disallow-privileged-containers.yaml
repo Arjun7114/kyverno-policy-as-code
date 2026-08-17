@@ -1,0 +1,30 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: disallow-privileged-containers
+  annotations:
+    policies.kyverno.io/title: Disallow Privileged Containers
+    policies.kyverno.io/category: Pod Security
+    policies.kyverno.io/severity: high
+    policies.kyverno.io/description: >-
+      Privileged containers can access the host and largely bypass isolation,
+      making them dangerous. This policy blocks any pod that requests
+      privileged mode.
+spec:
+  rules:
+    - name: check-privileged
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        failureAction: Enforce
+        message: >-
+          Privileged containers are not allowed. Set
+          securityContext.privileged to false.
+        pattern:
+          spec:
+            containers:
+              - =(securityContext):
+                  =(privileged): "false"
