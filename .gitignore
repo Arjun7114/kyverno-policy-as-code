@@ -1,0 +1,9 @@
+# OS / editor junk
+.DS_Store
+Thumbs.db
+*.swp
+
+# local kubeconfig or secrets — never commit these
+kubeconfig
+*.kubeconfig
+secrets/
