@@ -1,0 +1,31 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: add-runasnonroot-default
+  annotations:
+    policies.kyverno.io/title: Add runAsNonRoot Default
+    policies.kyverno.io/category: Pod Security
+    policies.kyverno.io/severity: medium
+    policies.kyverno.io/description: >-
+      Automatically sets runAsNonRoot to true on pods that do not already
+      specify it, enforcing a secure-by-default baseline without requiring
+      developers to add it manually.
+spec:
+  rules:
+    - name: set-runasnonroot
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      preconditions:
+        all:
+          - key: "{{ request.object.spec.securityContext.runAsNonRoot || 'notset' }}"
+            operator: Equals
+            value: "notset"
+      mutate:
+        patchesJson6902: |-
+          - op: add
+            path: "/spec/securityContext"
+            value:
+              runAsNonRoot: true
