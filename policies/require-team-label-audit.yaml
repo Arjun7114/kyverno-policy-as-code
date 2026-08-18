@@ -1,0 +1,28 @@
+apiVersion: kyverno.io/v1
+kind: ClusterPolicy
+metadata:
+  name: require-team-label
+  annotations:
+    policies.kyverno.io/title: Require Team Label (Audit)
+    policies.kyverno.io/category: Governance
+    policies.kyverno.io/severity: low
+    policies.kyverno.io/description: >-
+      Every pod should carry a 'team' label for ownership and cost attribution.
+      This policy runs in Audit mode: it records violations in policy reports
+      without blocking, demonstrating the safe rollout pattern before enforcing.
+spec:
+  rules:
+    - name: check-team-label
+      match:
+        any:
+          - resources:
+              kinds:
+                - Pod
+      validate:
+        failureAction: Audit
+        message: >-
+          Pods should have a 'team' label for ownership and cost attribution.
+        pattern:
+          metadata:
+            labels:
+              team: "?*"
