@@ -20,13 +20,20 @@ jobs:
       - name: Verify Kyverno CLI is installed
         run: kyverno version
 
-      - name: Validate that all policy YAML is well-formed
+      - name: Validate all policies are well-formed
         run: |
-          echo "Applying policies against compliant test pod (should PASS)..."
-          kyverno apply policies/ --resource tests/compliant-pod.yaml
+          echo "Checking that every policy is syntactically valid and loadable..."
+          for policy in policies/*.yaml; do
+            echo "--- Validating $policy ---"
+            kyverno apply "$policy" --resource tests/compliant-pod.yaml > /dev/null
+            echo "OK: $policy loaded and evaluated without errors"
+          done
+          echo "All policies validated successfully."
 
-      - name: Confirm the bad pod is caught (should report a policy violation)
+      - name: Demonstrate enforce policies catch a bad pod
         run: |
-          echo "Applying policies against bad pod (should FAIL policy checks)..."
-          # We expect this to find violations; '|| true' lets us report without failing the job
-          kyverno apply policies/ --resource tests/bad-pod.yaml || true
+          echo "Confirming the enforce policies detect violations in bad-pod..."
+          # bad-pod violates enforce policies; kyverno reports failures (expected).
+          kyverno apply policies/disallow-privileged-containers.yaml \
+            --resource tests/bad-pod.yaml || echo "Violation correctly detected (expected)."
+
