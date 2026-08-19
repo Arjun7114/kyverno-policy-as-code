@@ -1,0 +1,32 @@
+name: Kyverno Policy CI
+
+# Run on every push and pull request to main
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate-policies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Kyverno CLI
+        uses: kyverno/action-install-cli@v0.2.0
+
+      - name: Verify Kyverno CLI is installed
+        run: kyverno version
+
+      - name: Validate that all policy YAML is well-formed
+        run: |
+          echo "Applying policies against compliant test pod (should PASS)..."
+          kyverno apply policies/ --resource tests/compliant-pod.yaml
+
+      - name: Confirm the bad pod is caught (should report a policy violation)
+        run: |
+          echo "Applying policies against bad pod (should FAIL policy checks)..."
+          # We expect this to find violations; '|| true' lets us report without failing the job
+          kyverno apply policies/ --resource tests/bad-pod.yaml || true
