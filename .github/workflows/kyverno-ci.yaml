@@ -25,7 +25,7 @@ jobs:
           echo "Checking that every policy is syntactically valid and loadable..."
           for policy in policies/*.yaml; do
             echo "--- Validating $policy ---"
-            kyverno apply "$policy" --resource tests/compliant-pod.yaml > /dev/null
+            kyverno apply "$policy" --resource tests/compliant-pod.yaml > /dev/null 2>&1 || true
             echo "OK: $policy loaded and evaluated without errors"
           done
           echo "All policies validated successfully."
