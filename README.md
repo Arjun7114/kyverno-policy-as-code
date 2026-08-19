@@ -1,6 +1,6 @@
 # Kyverno: Policy-as-Code for Kubernetes Security
 
-!\[Kyverno Policy CI](https://github.com/Arjun7114/kyverno-policy-as-code/actions/workflows/kyverno-ci.yaml/badge.svg)
+![Kyverno Policy CI](https://github.com/Arjun7114/kyverno-policy-as-code/actions/workflows/kyverno-ci.yaml/badge.svg)
 
 Enforcing Kubernetes security and governance at **admission time** using Kyverno — blocking
 insecure workloads before they ever run, auto-remediating unsafe defaults, and pairing
@@ -9,7 +9,7 @@ deploy-time policy with build-time image scanning for defense-in-depth.
 Built and tested on a local Kubernetes cluster (kind), with every policy version-controlled as
 YAML — the way policies belong in a GitOps workflow.
 
-\---
+---
 
 ## Why this project
 
