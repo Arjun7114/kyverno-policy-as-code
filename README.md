@@ -66,13 +66,13 @@ Rather than *rejecting* pods that forget `runAsNonRoot`, the mutation policy *ad
 automatically. A pod submitted with no `securityContext` comes out of admission with
 `runAsNonRoot: true` injected — a "secure by default" baseline the developer never had to write.
 
-> \*\*Debugging note:\*\* the first attempt used `patchStrategicMerge` with `+()` anchors and
+> \\\*\\\*Debugging note:\\\*\\\* the first attempt used `patchStrategicMerge` with `+()` anchors and
 > silently failed — the created pod still had an empty `securityContext`. Caught by inspecting
-> the \*live\* resource (`kubectl get pod -o yaml`) rather than trusting the "created" message; the
+> the \\\*live\\\* resource (`kubectl get pod -o yaml`) rather than trusting the "created" message; the
 > container was still running as root (`uid: 0`). Switching to an explicit `patchesJson6902`
 > JSON patch with a precondition fixed it. This then exposed that the standard `nginx` image
 > can't run non-root — a real conflict the policy correctly surfaced. See
-> \[`docs/mutation-notes.md`](docs/mutation-notes.md).
+> \\\[`docs/mutation-notes.md`](docs/mutation-notes.md).
 
 ### 3\. Audit vs Enforce — the safe rollout pattern
 
@@ -81,12 +81,12 @@ existing workloads. The professional pattern is **Audit first**: the `require-te
 runs in Audit mode, so a pod missing the label is *admitted* but the violation is *recorded* —
 letting you see what would break before graduating to Enforce.
 
-> \*\*Ops war story:\*\* the Kyverno reports-controller repeatedly restarted on the local cluster.
+> \\\*\\\*Ops war story:\\\*\\\* the Kyverno reports-controller repeatedly restarted on the local cluster.
 > Traced through restart count -> clean exit code -> logs, which revealed leader-election
 > lease-renewal timeouts (`context deadline exceeded`) caused by slow API/etcd response on a
 > laptop kind cluster. Enforcement (synchronous, at admission) was unaffected; only asynchronous
 > report aggregation lagged. On a properly-resourced cluster this doesn't occur. See
-> \[`docs/audit-mode-notes.md`](docs/audit-mode-notes.md).
+> \\\[`docs/audit-mode-notes.md`](docs/audit-mode-notes.md).
 
 ### 4\. Build-time scanning — Trivy image vulnerability comparison
 
@@ -143,7 +143,7 @@ tests/                             # compliant + violating manifests
 docs/                              # notes + Trivy scan evidence
   mutation-notes.md
   audit-mode-notes.md
-  scan-\*.txt
+  scan-\\\*.txt
 .gitignore
 README.md
 ```
