@@ -11,6 +11,23 @@ YAML — the way policies belong in a GitOps workflow.
 
 ---
 
+## How it works
+
+```mermaid
+flowchart TD
+    Dev[Developer applies a resource] --> API[Kubernetes API Server]
+    API --> Webhook[Kyverno Admission Webhook]
+    Webhook --> Check{Evaluate against policies}
+    Check -->|Violates Enforce policy| Block[Rejected at admission]
+    Check -->|Missing safe default| Mutate[Auto-inject secure default]
+    Check -->|Compliant| Allow[Admitted to cluster]
+    Check -->|Violates Audit policy| Report[Recorded in PolicyReport, still admitted]
+    Mutate --> Allow
+
+    Trivy[Trivy scans image for CVEs] -.->|Build-time, before deploy| Dev
+```
+
+
 ## Why this project
 
 Kubernetes will run whatever you give it — including privileged containers, images with no
